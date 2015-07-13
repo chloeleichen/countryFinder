@@ -83,6 +83,7 @@ input[type=text]:focus{
   transform: rotate(90deg);
   -webkit-transition: all 0.8s ease; /* Safari */
   transition: all 0.8s ease;
+  cursor:pointer;
 
 }
 
@@ -104,7 +105,7 @@ li.open{
 }
 
 svg{
-  display: block; 
+  display: block;
   max-width: 100%!important;
 }
 

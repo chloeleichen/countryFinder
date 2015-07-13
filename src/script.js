@@ -26,8 +26,8 @@
 
   handleUserInput: function(filterText) {
     function matchRe(el){
-      if (this.state.filterText){
-        var re = new RegExp("^" + this.state.filterText, 'i');
+      if (filterText){
+        var re = new RegExp("^" + filterText, 'i');
         return re.test(el.countryName);
       } else {
         return false;
@@ -47,11 +47,14 @@
     var results = this.state.results;
     return (
       <div>
-      <SearchBox filterText={this.state.filterText}
+      <SearchBox ref="searchString"
+                 filterText={this.state.filterText}
                  onUserInput={this.handleUserInput} />
-        <ul>
+        <ul className="collection">
         {results.map(function(result) {
-          <CountryData result = {result}/>
+          // <li> {result} </li>
+          return(<CountryData result = {result} />)
+          // <CountryData result = {result} />
         })}
         </ul>
       </div>
@@ -62,22 +65,23 @@
  var SearchBox = React.createClass({
   handleChange:function(event){
     this.props.onUserInput(
+      // React.findDOMNode(this)
+      // this.refs.searchString.getDOMNode().value
       event.target.value
       );
   },
 
   render: function() {
     return (
-      <form> 
+      <form>
       <label htmlFor="search">Start typing a country name:</label>
-      <input 
-      id="search" 
-      type="text" 
-      className="field" 
-      autoComplete="off" 
+      <input
+      id="search"
+      type="text"
+      className="field"
+      autoComplete="off"
       onChange = {this.handleChange}
-      value={this.props.filterText}
-      />
+      value={this.props.filterText}/>
       </form>
       );
     }
@@ -87,15 +91,14 @@
   getInitialState:function(){
     return {open: false};
   },
-  
+
   handleClick: function(event) {
     this.setState({open: !this.state.open});
   },
 
   render:function(){
-    console.log(this.props);
     var country = this.props.result;
-    var dataToLoad = <li> </li>;
+    var dataToLoad;
     if(country){
       var iconClass = 'circle flag-icon flag-icon-'+ country.countryCode.toLowerCase();
       var listClass = (this.state.open? 'open': 'close') + ' collection-item avatar';
