@@ -47,13 +47,12 @@
     var results = this.state.results;
     return (
       <div>
-      <SearchBox ref="searchString"
-                 filterText={this.state.filterText}
+      <SearchBox filterText={this.state.filterText}
                  onUserInput={this.handleUserInput} />
         <ul className="collection">
         {results.map(function(result) {
           // <li> {result} </li>
-          return(<CountryData result = {result} />)
+          return(<CountryData key={result.countryCode} result = {result} />)
           // <CountryData result = {result} />
         })}
         </ul>
@@ -65,8 +64,6 @@
  var SearchBox = React.createClass({
   handleChange:function(event){
     this.props.onUserInput(
-      // React.findDOMNode(this)
-      // this.refs.searchString.getDOMNode().value
       event.target.value
       );
   },
@@ -103,7 +100,7 @@
       var iconClass = 'circle flag-icon flag-icon-'+ country.countryCode.toLowerCase();
       var listClass = (this.state.open? 'open': 'close') + ' collection-item avatar';
         return (
-          <li key={country.countryCode} className={listClass}>
+          <li className={listClass}>
           <i className={iconClass}></i>
           <p><span className ='title'>{country.countryName}</span>
           <br/>
@@ -116,6 +113,10 @@
           <a onClick={this.handleClick} className='secondary-content'> ||| </a>
           <table className='striped more-info'>
           <tbody>
+          <tr>
+          <th>Country code</th>
+          <td>{country.countryCode}</td>
+          </tr>
           <tr>
           <th>Population</th>
           <td>{country.population}</td>
@@ -130,11 +131,70 @@
           </tr>
           </tbody>
           </table>
+          <CountryMap countryCode ={country.countryCode}/>
           </li>
           );
         }
     }
  });
+  
+var CountryMap = React.createClass({
+  getInitialState:function(){
+    return {
+      data: [],
+      active: ''
+    }
+  },
+
+  mouseOver:function(event){
+    event.target.style.fill="#e88630";
+    this.setState({active:event.target.id });
+  },
+
+  mouseOut: function(event){
+    event.target.style.fill="#ccc";
+    this.setState({active:'' });
+
+  },
+
+  componentDidMount: function() {
+    var targetUrl = 'maps/'+ this.props.countryCode.toLowerCase()+'.json';
+      $.ajax({
+        url: targetUrl,
+        dataType: 'json',
+        cache: false,
+        success: function(data) {
+          this.setState({
+            data: data
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log('file not found');
+        }.bind(this)
+      });
+  },
+
+
+  render: function(){
+    if (this.state.data.path){
+      var arr = this.state.data.path;
+      var text = this.state.active ? this.state.active : 'hover over map for more info';
+      return (
+        <div>
+        <p> {text} </p>
+        <svg width="300px" height="300px" viewBox="0 0 300 300">
+              {arr.map(function(el){
+              return (<path onMouseOver= {this.mouseOver} onMouseOut={this.mouseOut} id ={el.title} key = {el.title} d ={el.d}></path>)
+              }, this)}
+             </svg>
+        </div>
+      );
+    } else{
+      return <div> </div>
+    }
+
+  }
+});
 
   React.render(
     <CountryDataWrapper url="data.json" />,

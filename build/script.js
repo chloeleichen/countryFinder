@@ -47,13 +47,12 @@
     var results = this.state.results;
     return (
       React.createElement("div", null, 
-      React.createElement(SearchBox, {ref: "searchString", 
-                 filterText: this.state.filterText, 
+      React.createElement(SearchBox, {filterText: this.state.filterText, 
                  onUserInput: this.handleUserInput}), 
         React.createElement("ul", {className: "collection"}, 
         results.map(function(result) {
           // <li> {result} </li>
-          return(React.createElement(CountryData, {result: result}))
+          return(React.createElement(CountryData, {key: result.countryCode, result: result}))
           // <CountryData result = {result} />
         })
         )
@@ -65,8 +64,6 @@
  var SearchBox = React.createClass({displayName: "SearchBox",
   handleChange:function(event){
     this.props.onUserInput(
-      // React.findDOMNode(this)
-      // this.refs.searchString.getDOMNode().value
       event.target.value
       );
   },
@@ -103,7 +100,7 @@
       var iconClass = 'circle flag-icon flag-icon-'+ country.countryCode.toLowerCase();
       var listClass = (this.state.open? 'open': 'close') + ' collection-item avatar';
         return (
-          React.createElement("li", {key: country.countryCode, className: listClass}, 
+          React.createElement("li", {className: listClass}, 
           React.createElement("i", {className: iconClass}), 
           React.createElement("p", null, React.createElement("span", {className: "title"}, country.countryName), 
           React.createElement("br", null), 
@@ -117,6 +114,10 @@
           React.createElement("table", {className: "striped more-info"}, 
           React.createElement("tbody", null, 
           React.createElement("tr", null, 
+          React.createElement("th", null, "Country code"), 
+          React.createElement("td", null, country.countryCode)
+          ), 
+          React.createElement("tr", null, 
           React.createElement("th", null, "Population"), 
           React.createElement("td", null, country.population)
           ), 
@@ -129,12 +130,71 @@
           React.createElement("td", null, country.areaInSqKm)
           )
           )
-          )
+          ), 
+          React.createElement(CountryMap, {countryCode: country.countryCode})
           )
           );
         }
     }
  });
+  
+var CountryMap = React.createClass({displayName: "CountryMap",
+  getInitialState:function(){
+    return {
+      data: [],
+      active: ''
+    }
+  },
+
+  mouseOver:function(event){
+    event.target.style.fill="#e88630";
+    this.setState({active:event.target.id });
+  },
+
+  mouseOut: function(event){
+    event.target.style.fill="#ccc";
+    this.setState({active:'' });
+
+  },
+
+  componentDidMount: function() {
+    var targetUrl = 'maps/'+ this.props.countryCode.toLowerCase()+'.json';
+      $.ajax({
+        url: targetUrl,
+        dataType: 'json',
+        cache: false,
+        success: function(data) {
+          this.setState({
+            data: data
+          });
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.log('file not found');
+        }.bind(this)
+      });
+  },
+
+
+  render: function(){
+    if (this.state.data.path){
+      var arr = this.state.data.path;
+      var text = this.state.active ? this.state.active : 'hover over map for more info';
+      return (
+        React.createElement("div", null, 
+        React.createElement("p", null, " ", text, " "), 
+        React.createElement("svg", {width: "300px", height: "300px", viewBox: "0 0 300 300"}, 
+              arr.map(function(el){
+              return (React.createElement("path", {onMouseOver: this.mouseOver, onMouseOut: this.mouseOut, id: el.title, key: el.title, d: el.d}))
+              }, this)
+             )
+        )
+      );
+    } else{
+      return React.createElement("div", null, " ")
+    }
+
+  }
+});
 
   React.render(
     React.createElement(CountryDataWrapper, {url: "data.json"}),

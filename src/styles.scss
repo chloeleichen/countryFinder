@@ -107,6 +107,14 @@ li.open{
 svg{
   display: block;
   max-width: 100%!important;
+  fill: #cccccc;
+  path{
+    fill: #CCCCCC;
+    fill-opacity: 1;
+    stroke:white;
+    stroke-opacity: 1;
+    stroke-width:0.5;
+  }
 }
 
 object{
@@ -118,4 +126,5 @@ object{
 .td-map{
   padding: 5px 0;
 }
+
 
