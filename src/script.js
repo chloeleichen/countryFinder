@@ -182,7 +182,7 @@ var CountryMap = React.createClass({
       return (
         <div>
         <p> {text} </p>
-        <svg width="300px" height="300px" viewBox="0 0 300 300">
+        <svg width="800px" height="500px" viewBox="0 0 800 500">
               {arr.map(function(el){
               return (<path onMouseOver= {this.mouseOver} onMouseOut={this.mouseOut} id ={el.title} key = {el.title} d ={el.d}></path>)
               }, this)}
