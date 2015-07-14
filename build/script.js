@@ -137,7 +137,7 @@
         }
     }
  });
-  
+
 var CountryMap = React.createClass({displayName: "CountryMap",
   getInitialState:function(){
     return {
@@ -195,13 +195,10 @@ var CountryMap = React.createClass({displayName: "CountryMap",
 
   }
 });
-
   React.render(
     React.createElement(CountryDataWrapper, {url: "data.json"}),
     document.getElementById('search')
   );
-
-
  }());
 
 
