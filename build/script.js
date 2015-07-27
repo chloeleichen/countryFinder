@@ -182,17 +182,16 @@ var CountryMap = React.createClass({displayName: "CountryMap",
       return (
         React.createElement("div", null, 
         React.createElement("p", null, " ", text, " "), 
-        React.createElement("svg", {width: "800px", height: "500px", viewBox: "0 0 800 500"}, 
+        React.createElement("svg", {width: "600px", height: "400px", viewBox: "0 0 600 600"}, 
               arr.map(function(el){
               return (React.createElement("path", {onMouseOver: this.mouseOver, onMouseOut: this.mouseOut, id: el.title, key: el.title, d: el.d}))
               }, this)
              )
-        )
+          )
       );
     } else{
       return React.createElement("div", null, " ")
     }
-
   }
 });
   React.render(

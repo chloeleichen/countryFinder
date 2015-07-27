@@ -9,6 +9,10 @@ html {
 body {
   min-height: 100vh;
   position: relative;
+  background-image: url("../world.png");
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .main {
@@ -121,4 +125,9 @@ object {
 
 .td-map {
   padding: 5px 0;
+}
+
+.globe {
+  display: block;
+  margin: 0 auto;
 }
